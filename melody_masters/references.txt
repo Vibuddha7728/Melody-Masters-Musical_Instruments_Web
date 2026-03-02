@@ -1,0 +1,39 @@
+============================================================
+MELODY MASTERS - PROJECT REFERENCES
+============================================================
+
+The following resources and documentation were consulted 
+during the development of the Melody Masters E-commerce System:
+
+1. PHP Documentation
+   - Official PHP manual for session management, database 
+     connectivity, and prepared statements.
+   - URL: https://www.php.net/docs.php
+
+2. W3Schools PHP & MySQL Tutorial
+   - Used for learning CRUD operations (Create, Read, Update, Delete) 
+     and user authentication logic.
+   - URL: https://www.w3schools.com/php/
+
+3. Bootstrap 5 Documentation
+   - Used for the frontend responsive layout, navigation bars, 
+     and card-based UI components.
+   - URL: https://getbootstrap.com/docs/5.3/
+
+4. Stack Overflow
+   - Referenced for troubleshooting specific SQL query issues 
+     and session timeout configurations.
+   - URL: https://stackoverflow.com/
+
+5. MySQL Reference Manual
+   - Used for designing the relational database schema and 
+     foreign key constraints.
+   - URL: https://dev.mysql.com/doc/
+
+6. MDN Web Docs
+   - Consulted for HTML5 and CSS3 best practices.
+   - URL: https://developer.mozilla.org/
+
+============================================================
+Prepared as part of the Advanced Web Technologies Assignment.
+============================================================

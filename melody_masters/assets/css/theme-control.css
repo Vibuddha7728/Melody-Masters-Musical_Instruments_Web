@@ -1,0 +1,104 @@
+/* --- 1. පද්ධතියේ මූලික වර්ණ (Variables) --- */
+:root {
+    --bg-color: #0b0b0b;
+    --text-color: #ffffff;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.07);
+    --accent-color: #ffc107;
+}
+
+/* --- 2. Light Mode එක On වුණාම වර්ණ මාරු වීම --- */
+body.light-mode {
+    --bg-color: #ffffff;
+    --text-color: #121212;
+    --card-bg: #f8f9fa;
+    --border-color: #dddddd;
+    --input-bg: #f0f0f0;
+}
+
+/* --- 3. මුළු සයිට් එකටම පොදුවේ බලපාන Styles --- */
+body {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s ease, color 0.3s ease; /* පෙනුම සුමට කිරීමට */
+}
+
+/* සෑම Section, Div, Header සහ Footer එකකටම */
+body.light-mode section, 
+body.light-mode footer, 
+body.light-mode header,
+body.light-mode aside,
+body.light-mode .container-fluid,
+body.light-mode .container {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* --- 4. Cards, Modals සහ Boxes --- */
+body.light-mode .card,
+body.light-mode .modal-content,
+body.light-mode .dropdown-menu,
+body.light-mode .popover,
+body.light-mode .toast {
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* --- 5. අකුරු සහ Links --- */
+body.light-mode h1, body.light-mode h2, body.light-mode h3, 
+body.light-mode h4, body.light-mode h5, body.light-mode h6, 
+body.light-mode p, body.light-mode span, body.light-mode label,
+body.light-mode li, body.light-mode small {
+    color: var(--text-color) !important;
+}
+
+body.light-mode a:not(.btn) {
+    color: #0056b3; /* Light mode එකේදී links නිල් පාටින් පෙනීම වඩාත් සුදුසුයි */
+}
+
+body.light-mode .nav-link {
+    color: #333333 !important;
+}
+
+body.light-mode .nav-link.active, 
+body.light-mode .nav-link:hover {
+    color: var(--accent-color) !important;
+}
+
+/* --- 6. Form Inputs, Selects සහ Textareas --- */
+body.light-mode input, 
+body.light-mode textarea, 
+body.light-mode select {
+    background-color: var(--input-bg) !important;
+    color: #000000 !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+body.light-mode input::placeholder, 
+body.light-mode textarea::placeholder {
+    color: #6c757d !important; /* Placeholder එක අපැහැදිලි නොවන ලෙස */
+}
+
+/* --- 7. Tables (වගු) --- */
+body.light-mode table {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+body.light-mode th, body.light-mode td {
+    border-color: var(--border-color) !important;
+}
+
+/* --- 8. Buttons (විශේෂයෙන් Outline Buttons) --- */
+body.light-mode .btn-outline-light {
+    color: #333 !important;
+    border-color: #333 !important;
+}
+
+body.light-mode .btn-outline-light:hover {
+    background-color: #333 !important;
+    color: #fff !important;
+}
