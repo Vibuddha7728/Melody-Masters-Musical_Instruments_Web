@@ -56,7 +56,7 @@
 ## 📈 Roadmap & Future Scope
 - [ ] **Payment Integration:** Live PayHere/PayPal gateway.
 - [ ] **AI Recommendation:** Machine learning to suggest instruments based on history.
-- [ ] **Live Chat:** Hand over AI conversations to human staff.
+- [ ] **Live Chat Bot:** Hand over AI conversations to human staff.
 
 ---
 
