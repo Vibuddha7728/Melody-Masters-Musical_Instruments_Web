@@ -41,39 +41,54 @@ function sendOrderSMS($phone, $order_id, $status) {
     return $response;
 }
 
-$message = "";
-
 // Order Status හෝ Tracking Number update කිරීමේ logic එක
 if (isset($_POST['update_order'])) {
     $order_id = intval($_POST['order_id']);
     $status = mysqli_real_escape_string($conn, $_POST['status']);
     $tracking = mysqli_real_escape_string($conn, $_POST['tracking_no']);
 
-    // පාරිභෝගිකයාගේ දුරකථන අංකය ලබා ගැනීම
-    $user_query = "SELECT users.phone_number FROM orders JOIN users ON orders.user_id = users.id WHERE orders.id = $order_id";
+    // පාරිභෝගිකයාගේ දුරකථන අංකය සහ දැනට පවතින status එක ලබා ගැනීම
+    $user_query = "SELECT users.phone_number, orders.status as current_status FROM orders JOIN users ON orders.user_id = users.id WHERE orders.id = $order_id";
     $user_res = $conn->query($user_query);
     $user_data = $user_res->fetch_assoc();
+    
     $customer_phone = $user_data['phone_number'] ?? '';
+    $current_status = $user_data['current_status'] ?? '';
 
-    $sql = "UPDATE orders SET status = ?, tracking_no = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssi", $status, $tracking, $order_id);
+    // Status එක වෙනස් වී ඇත්නම් පමණක් update කිරීම සහ SMS යැවීම
+    if ($status !== $current_status || $tracking !== ($user_data['tracking_no'] ?? '')) {
+        $sql = "UPDATE orders SET status = ?, tracking_no = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssi", $status, $tracking, $order_id);
 
-    if ($stmt->execute()) {
-        // Update එක සාර්ථක නම් පමණක් SMS එක යවන්න
-        if (!empty($customer_phone)) {
-            sendOrderSMS($customer_phone, $order_id, $status);
+        if ($stmt->execute()) {
+            // Status එක වෙනස් වූ විට පමණක් SMS එක යවන්න
+            if (!empty($customer_phone) && $status !== $current_status) {
+                sendOrderSMS($customer_phone, $order_id, $status);
+            }
+
+            $_SESSION['success_msg'] = "Order #ORD-00$order_id updated to $status status and SMS sent.";
         }
-
-        $message = "Swal.fire({
-            icon: 'success',
-            title: 'Action Successful',
-            text: 'Order #ORD-00$order_id updated to $status status and SMS sent.',
-            background: '#121212',
-            color: '#ffffff',
-            confirmButtonColor: '#ffc107'
-        });";
     }
+    
+    // Redirect කිරීම (Refresh වලදී නැවත SMS යෑම වැලැක්වීමට මෙය අනිවාර්ය වේ)
+    header("Location: " . $_SERVER['PHP_SELF'] . (isset($_GET['search']) ? "?search=" . urlencode($_GET['search']) : ""));
+    exit();
+}
+
+// Session එකේ පණිවිඩයක් තිබේ නම් එය SweetAlert එකට සකස් කිරීම
+$message = "";
+if (isset($_SESSION['success_msg'])) {
+    $msg_text = $_SESSION['success_msg'];
+    $message = "Swal.fire({
+        icon: 'success',
+        title: 'Action Successful',
+        text: '$msg_text',
+        background: '#121212',
+        color: '#ffffff',
+        confirmButtonColor: '#ffc107'
+    });";
+    unset($_SESSION['success_msg']); 
 }
 
 // Search Logic
