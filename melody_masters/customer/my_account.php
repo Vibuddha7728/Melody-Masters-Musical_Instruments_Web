@@ -110,7 +110,17 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
             background: transparent;
         }
 
-        .order-id-text { color: #ffffff; font-weight: 700; font-size: 1.1rem; }
+        .order-id-text { 
+            color: var(--accent); 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            cursor: pointer; 
+            display: inline-block;
+            border-bottom: 1px dashed var(--accent);
+            transition: 0.2s;
+        }
+        .order-id-text:hover { opacity: 0.8; }
+        
         .product-names { font-size: 0.85rem; color: #bbb; margin-top: 5px; }
 
         .status-pill {
@@ -152,6 +162,19 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
         }
         .btn-logout:hover { background: #ff5f5f; color: #fff; }
 
+        .btn-home {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-home:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+
         .modal-content {
             background: #0f0f0f;
             border: 1px solid var(--border);
@@ -177,6 +200,30 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
 
         tr { transition: 0.3s; }
         tr:hover { background: rgba(255, 255, 255, 0.02); }
+
+        /* Modernized Tooltip Styling */
+        .tooltip-inner {
+            background: #121212 !important;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #fff !important;
+            padding: 15px;
+            border-radius: 18px;
+            text-align: left;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            min-width: 260px;
+            backdrop-filter: blur(10px);
+        }
+        .tooltip-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tooltip-item-row:last-child { border-bottom: none; }
+        .tooltip-prod-name { font-weight: 600; font-size: 13px; color: #efefef; }
+        .tooltip-prod-meta { font-size: 11px; color: #888; }
+        .tooltip-header { font-size: 10px; font-weight: 800; color: var(--accent); letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -184,7 +231,10 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
 <nav class="nav-glass">
     <div class="container d-flex justify-content-between align-items-center">
         <a href="../index.php" class="logo-text">MELODY<span class="text-warning">MASTERS</span></a>
-        <a href="../logout.php" class="btn-logout"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a>
+        <div class="d-flex gap-2">
+            <a href="../index.php" class="btn-home"><i class="bi bi-house-door me-2"></i>Home</a>
+            <a href="../logout.php" class="btn-logout"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a>
+        </div>
     </div>
 </nav>
 
@@ -213,7 +263,6 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
                 </thead>
                 <tbody>
                     <?php
-                    // Orders table එකෙන් status එක ලබා ගැනීම
                     $stmt = $conn->prepare("SELECT id, total_amount, status FROM orders WHERE user_id = ? ORDER BY id DESC");
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
@@ -224,17 +273,17 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
                     if($orders && $orders->num_rows > 0):
                         while($row = $orders->fetch_assoc()):
                             $o_id = (int)$row['id'];
-                            // මෙතැනදී trim සහ strtolower භාවිතයෙන් නිවැරදිව status එක පරීක්ෂා කරයි
                             $order_status = strtolower(trim($row['status']));
                             $is_completed = ($order_status == 'completed');
                             $order_total = $row['total_amount'];
 
-                            $p_stmt = $conn->prepare("SELECT p.id as prod_id, p.name, dp.file_path FROM order_items oi JOIN products p ON oi.product_id = p.id LEFT JOIN digital_products dp ON p.id = dp.product_id WHERE oi.order_id = ?");
+                            $p_stmt = $conn->prepare("SELECT p.id as prod_id, p.name, oi.quantity, oi.price, dp.file_path FROM order_items oi JOIN products p ON oi.product_id = p.id LEFT JOIN digital_products dp ON p.id = dp.product_id WHERE oi.order_id = ?");
                             $p_stmt->bind_param("i", $o_id);
                             $p_stmt->execute();
                             $p_query = $p_stmt->get_result();
                             
                             $product_names_arr = [];
+                            $tooltip_list = "<div class='tooltip-header'>Order Content</div>";
                             $digital_assets = [];
                             $has_digital = false;
                             $first_prod_name = "";
@@ -246,6 +295,13 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
                                     $first_prod_id = $p['prod_id'];
                                 }
                                 $product_names_arr[] = htmlspecialchars($p['name']);
+                                
+                                // Updated Tooltip HTML for better clarity
+                                $tooltip_list .= "<div class='tooltip-item-row'>";
+                                $tooltip_list .= "<div><div class='tooltip-prod-name'>" . htmlspecialchars($p['name']) . "</div>";
+                                $tooltip_list .= "<div class='tooltip-prod-meta'>Quantity: " . $p['quantity'] . "</div></div>";
+                                $tooltip_list .= "<div class='fw-bold text-warning small'>£" . number_format($p['price'], 2) . "</div>";
+                                $tooltip_list .= "</div>";
                                 
                                 if(!empty($p['file_path'])) {
                                     $has_digital = true;
@@ -295,7 +351,13 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
                     ?>
                     <tr>
                         <td>
-                            <div class="order-id-text">#ORD-<?php echo $o_id; ?></div>
+                            <div class="order-id-text" 
+                                 data-bs-toggle="tooltip" 
+                                 data-bs-html="true" 
+                                 data-bs-placement="right"
+                                 title="<?php echo htmlspecialchars($tooltip_list); ?>">
+                                #ORD-<?php echo $o_id; ?>
+                            </div>
                             <div class="product-names text-truncate" style="max-width: 250px;">
                                 <i class="bi bi-music-note-beamed me-1"></i> <?php echo $display_names; ?>
                             </div>
@@ -349,5 +411,10 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'User');
 <?php echo $modal_html; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Tooltips Initialize කිරීම
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+</script>
 </body>
 </html>

@@ -34,9 +34,42 @@ include 'ai_widget.php';
     .hero-bg {
         background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.9)), 
                           url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070');
-        height: 100vh; background-position: center; background-size: cover;
-        display: flex; align-items: center; justify-content: center; text-align: center;
+        height: 100vh;
+        background-position: center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         position: relative;
+    }
+
+    /* --- Light Mode Hero Fix --- */
+    body.light-mode .hero-bg {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.35)),
+                          url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070') !important;
+    }
+
+    body.light-mode .hero-bg h1 {
+        color: #111111 !important;
+        text-shadow: 0 2px 12px rgba(255, 255, 255, 0.45);
+    }
+
+    body.light-mode .hero-bg h1 .text-warning,
+    body.light-mode .hero-bg span.text-warning {
+        color: #d39e00 !important;
+    }
+
+    body.light-mode .hero-bg p,
+    body.light-mode .hero-bg .lead {
+        color: #1f1f1f !important;
+        opacity: 1 !important;
+        text-shadow: 0 1px 8px rgba(255, 255, 255, 0.35);
+    }
+
+    body.light-mode .hero-bg .btn-warning {
+        color: #000 !important;
+        box-shadow: 0 8px 25px rgba(255, 193, 7, 0.25);
     }
 
     /* --- Mouse Icon --- */
@@ -56,10 +89,29 @@ include 'ai_widget.php';
     }
     @keyframes scroll-wheel { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(15px); } }
 
+    body.light-mode .mouse {
+        border-color: #b8860b !important;
+        box-shadow: 0 0 12px rgba(184, 134, 11, 0.25);
+    }
+
     /* --- Features Bar --- */
     .features-bar { background-color: #080808; padding: 60px 0; border-bottom: 1px solid #111; }
     .feature-item i { font-size: 2.5rem; color: #ffc107; margin-bottom: 15px; display: block; transition: 0.3s; }
     .feature-item:hover i { transform: scale(1.2); text-shadow: 0 0 15px rgba(255,193,7,0.5); }
+
+    body.light-mode .features-bar {
+        background-color: #ffffff !important;
+        border-bottom: 1px solid #dddddd !important;
+    }
+
+    body.light-mode .features-bar h6,
+    body.light-mode .features-bar p {
+        color: #121212 !important;
+    }
+
+    body.light-mode .features-bar .text-white-50 {
+        color: #6c757d !important;
+    }
 
     /* --- Section Divider --- */
     .section-divider { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
@@ -69,6 +121,14 @@ include 'ai_widget.php';
     /* --- Headings --- */
     .main-heading { color: #ffffff; font-weight: 800; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: 1px; }
     .main-heading span { color: #ffc107; }
+
+    body.light-mode .main-heading {
+        color: #121212 !important;
+    }
+
+    body.light-mode .main-heading span {
+        color: #d39e00 !important;
+    }
 
     /* --- Product Cards --- */
     .section-padding { padding: 100px 0 60px 0; } 
@@ -81,6 +141,24 @@ include 'ai_widget.php';
     .product-card:hover { transform: translateY(-15px); border-color: rgba(255, 193, 7, 0.5); }
     .product-img-container { height: 250px; background: #fff; display: flex; align-items: center; justify-content: center; padding: 30px; position: relative; }
     .product-img { max-width: 100%; max-height: 100%; object-fit: contain; transition: 0.5s; }
+
+    body.light-mode .section-padding {
+        background: #ffffff !important;
+    }
+
+    body.light-mode .product-card {
+        background: #f8f9fa !important;
+        border: 1px solid #dddddd !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-mode .product-card h5 {
+        color: #121212 !important;
+    }
+
+    body.light-mode .product-img-container {
+        background: #ffffff !important;
+    }
 
     /* --- Testimonials --- */
     .testimonials-section { padding: 100px 0; background: #000; }
@@ -111,11 +189,68 @@ include 'ai_widget.php';
     
     .star-rating { color: #ffc107; font-size: 1.1rem; }
 
+    body.light-mode .testimonials-section {
+        background: #ffffff !important;
+    }
+
+    body.light-mode .review-card {
+        background: #f8f9fa !important;
+        border: 1px solid #dddddd !important;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    body.light-mode .review-card:hover {
+        background: #ffffff !important;
+        border-color: #ffc107 !important;
+    }
+
+    body.light-mode .review-text,
+    body.light-mode .user-name,
+    body.light-mode .prod-bought {
+        color: #121212 !important;
+    }
+
+    body.light-mode .prod-bought.text-white-50 {
+        color: #6c757d !important;
+    }
+
+    body.light-mode .user-info {
+        border-top: 1px solid #dddddd !important;
+    }
+
+    body.light-mode .user-avatar {
+        background: #ffffff !important;
+        border: 1px solid rgba(255, 193, 7, 0.35) !important;
+    }
+
     /* --- Promo Section --- */
     .promo-section-padding { padding: 40px 0 100px 0; } 
     .promo-box { position: relative; height: 450px; overflow: hidden; border-radius: 20px; cursor: pointer; }
     .promo-box img { width: 100%; height: 100%; object-fit: cover; transition: 1.5s ease; }
     .promo-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+
+    body.light-mode .promo-section-padding {
+        background: #ffffff !important;
+    }
+
+    body.light-mode .promo-overlay {
+        background: linear-gradient(to top, rgba(255,255,255,0.45), rgba(255,255,255,0.05)) !important;
+    }
+
+    body.light-mode .promo-overlay h3 {
+        color: #111111 !important;
+        text-shadow: 0 1px 8px rgba(255,255,255,0.35);
+    }
+
+    body.light-mode .btn-outline-light {
+        color: #121212 !important;
+        border-color: #121212 !important;
+    }
+
+    body.light-mode .btn-outline-light:hover {
+        background: #121212 !important;
+        color: #ffffff !important;
+    }
 
     /* RESPONSIVENESS */
     @media (max-width: 991px) {

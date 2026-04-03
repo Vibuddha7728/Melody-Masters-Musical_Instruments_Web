@@ -28,7 +28,7 @@ foreach ($_SESSION['cart'] as $id => $qty) {
         $cart_items[] = $product;
         $subtotal += ($product['price'] * $qty);
         
-        // Product එක Physical ද යන්න පරීක්ෂා කිරීම (Database එකේ product_type column එක අනුව)
+        // Product එක Physical ද යන්න පරීක්ෂා කිරීම
         if (isset($product['product_type']) && strtolower($product['product_type']) == 'physical') { 
             $has_physical = true; 
         }
@@ -137,6 +137,7 @@ $grand_total = $subtotal + $shipping;
             padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); 
         }
         .prod-thumb { width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border); }
+        .prod-info { flex: 1; }
         .prod-info .name { font-weight: 700; color: #fff; font-size: 0.95rem; display: block; }
         .prod-info .qty { color: var(--text-dim); font-size: 0.8rem; }
         .prod-price { font-weight: 700; color: #fff; margin-left: auto; }
@@ -166,6 +167,7 @@ $grand_total = $subtotal + $shipping;
         .pay-box { 
             cursor: pointer; padding: 20px; border: 1.5px solid var(--border); border-radius: 20px; 
             text-align: center; transition: 0.3s; background: rgba(255,255,255,0.02);
+            height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         input[type="radio"] { display: none; }
         input[type="radio"]:checked + .pay-box { border-color: var(--primary); background: rgba(255,193,7,0.1); }
@@ -214,7 +216,7 @@ $grand_total = $subtotal + $shipping;
             <span class="step-label mt-4">Step 03: Payment Choice</span>
             <div class="payment-grid <?php echo $has_physical ? 'double-column' : 'single-column'; ?>">
                 <label class="m-0 w-100">
-                    <input type="radio" name="payment_method" value="card" checked>
+                    <input type="radio" name="payment_method" value="Debit/Credit Card" checked>
                     <div class="pay-box">
                         <i class="bi bi-credit-card-2-front"></i>
                         <span>Debit/Credit Card</span>
@@ -223,7 +225,7 @@ $grand_total = $subtotal + $shipping;
 
                 <?php if ($has_physical): ?>
                 <label class="m-0 w-100">
-                    <input type="radio" name="payment_method" value="cod">
+                    <input type="radio" name="payment_method" value="Cash On Delivery">
                     <div class="pay-box">
                         <i class="bi bi-truck"></i>
                         <span>Cash On Delivery</span>

@@ -16,6 +16,9 @@ if (isset($_POST['place_order'])) {
     $user_id = (int)$_SESSION['user_id'];
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     
+    // Checkout එකේදී තෝරාගත් Payment Method එක ලබා ගැනීම
+    $payment_method = isset($_POST['payment_method']) ? mysqli_real_escape_string($conn, $_POST['payment_method']) : 'Cash On Delivery';
+    
     // --- පියවර 01: මුළු මුදල (Grand Total) සහ Product Type පරීක්ෂා කිරීම ---
     $subtotal = 0;
     $has_physical = false;
@@ -47,8 +50,6 @@ if (isset($_POST['place_order'])) {
     $grand_total = $subtotal + $shipping; 
 
     // --- Dynamic Status Logic ---
-    // Physical product එකක් ඇත්නම් එය 'pending' වේ.
-    // Digital පමණක් ඇත්නම් එය 'completed' වේ.
     if ($has_physical) {
         $status = 'pending';
         $alert_msg = "Order Successful! Your physical items are now PENDING.";
@@ -57,10 +58,10 @@ if (isset($_POST['place_order'])) {
         $alert_msg = "Order Successful! Your digital order is COMPLETED.";
     }
 
-    // --- පියවර 02: Order එක ඇතුළත් කිරීම ---
-    $sql = "INSERT INTO orders (user_id, total_amount, status, created_at) VALUES (?, ?, ?, NOW())";
+    // --- පියවර 02: Order එක ඇතුළත් කිරීම (payment_method දත්ත ද සමඟ) ---
+    $sql = "INSERT INTO orders (user_id, total_amount, payment_method, status, created_at) VALUES (?, ?, ?, ?, NOW())";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ids", $user_id, $grand_total, $status);
+    $stmt->bind_param("idss", $user_id, $grand_total, $payment_method, $status);
     
     if ($stmt->execute()) {
         $order_id = $conn->insert_id;

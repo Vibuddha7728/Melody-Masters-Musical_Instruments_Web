@@ -4,20 +4,30 @@ include 'includes/db_config.php';
 
 // --- 1. ලියාපදිංචි වීමේ කොටස (Registration Logic) ---
 if (isset($_POST['register'])) {
+    // පෝරමයෙන් ලැබෙන දත්ත ආරක්ෂිතව ලබා ගැනීම
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
+    
+    // නව ක්ෂේත්‍ර (Phone Number සහ Address) ලබා ගැනීම
+    $phone_number = mysqli_real_escape_string($conn, $_POST['phone_number']); 
+    $address = mysqli_real_escape_string($conn, $_POST['address']);           
+    
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); 
     
-    // ආරක්ෂාව සඳහා සියලුම නව ලියාපදිංචි කිරීම් 'customer' ලෙස සලකනු ලැබේ.
+    // පද්ධතියේ භූමිකාව (Role) තීරණය කිරීම
     $role = 'customer'; 
 
+    // ඊමේල් එක දැනටමත් පද්ධතියේ තිබේදැයි පරීක්ෂා කිරීම
     $checkEmail = "SELECT * FROM users WHERE email='$email'";
     $result = $conn->query($checkEmail);
 
     if ($result->num_rows > 0) {
         echo "<script>alert('Email already exists!'); window.location='index.php';</script>";
     } else {
-        $sql = "INSERT INTO users (username, email, password, role) VALUES ('$username', '$email', '$password', '$role')";
+        // නව දත්ත දත්ත සමුදායට (Database) ඇතුළත් කිරීම
+        $sql = "INSERT INTO users (username, email, phone_number, address, password, role) 
+                VALUES ('$username', '$email', '$phone_number', '$address', '$password', '$role')";
+        
         if ($conn->query($sql) === TRUE) {
             echo "<script>alert('Registration Successful! Please Login.'); window.location='index.php';</script>";
         } else {
@@ -45,9 +55,7 @@ if (isset($_POST['login'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            /* --- REDIRECTION LOGIC ---
-               පරිශීලකයාගේ Role එක අනුව නිවැරදි Dashboard එකට යැවීම.
-            */
+            /* --- REDIRECTION LOGIC --- */
             if ($user['role'] == 'admin') {
                 header("Location: admin/admin_dashboard.php");
                 exit();
@@ -57,16 +65,13 @@ if (isset($_POST['login'])) {
                 exit();
             } 
             else {
-                // සාමාන්‍ය Customer කෙනෙක් නම් Shop එකට හෝ Index එකට
                 header("Location: shop.php"); 
                 exit();
             }
         } else {
-            // වැරදි මුරපදයක් නම්
             echo "<script>alert('Incorrect Password!'); window.location='index.php';</script>";
         }
     } else {
-        // අදාළ Email එකෙන් පරිශීලකයෙකු නොමැති නම්
         echo "<script>alert('No user found with this email!'); window.location='index.php';</script>";
     }
 }
